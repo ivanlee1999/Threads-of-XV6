@@ -163,7 +163,6 @@ growproc(int n)
 {
   uint sz;
   struct proc *curproc = myproc();
-  struct proc *p;
 
   sz = curproc->sz;
   if(n > 0){
@@ -172,12 +171,6 @@ growproc(int n)
   } else if(n < 0){
     if((sz = deallocuvm(curproc->pgdir, sz, sz + n)) == 0)
       return -1;
-  }
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      	/*if not a thread then keep scanning the pg table*/
-        if(p->pgdir != curproc->pgdir )
-        	continue;
-        p->sz=sz;
   }
   curproc->sz = sz;
   switchuvm(curproc);
@@ -264,16 +257,12 @@ exit(void)
 
   // Pass abandoned children to init.
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->pgdir != curproc->pgdir){
-    	  p->parent = initproc;
-		    if(p->state == ZOMBIE)
-			  wakeup1(initproc);
-      }
-      else{
-    	  p->parent = 0;
-    	  p->state =ZOMBIE;
-      }
+    if(p->parent == curproc){
+      p->parent = initproc;
+      if(p->state == ZOMBIE)
+        wakeup1(initproc);
     }
+  }
 
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
@@ -295,7 +284,7 @@ wait(void)
     // Scan through table looking for exited children.
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->parent != curproc)
+      if(p->parent != curproc || p->isthread == 1)
         continue;
       havekids = 1;
       if(p->state == ZOMBIE){
@@ -494,20 +483,12 @@ int
 kill(int pid)
 {
   struct proc *p;
-  struct proc *pc;
 
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->pid == pid){
       p->killed = 1;
       // Wake process from sleep if necessary.
-      for(pc = ptable.proc; pc < &ptable.proc[NPROC]; pc++){
-         if ((pc->parent == p) && (pc->isthread == 1)){
-            pc->killed = 1;
-            if (pc->state == SLEEPING)
-               pc->state = RUNNABLE;
-         }
-      }
       if(p->state == SLEEPING)
         p->state = RUNNABLE;
       release(&ptable.lock);
@@ -556,10 +537,18 @@ procdump(void)
 }
 
 int clone(void(*fcn)(void *, void *), void *arg1, void *arg2, void *stack){
-  cprintf("start cloning\n");
+  // cprintf("start cloning\n");
   int i, pid;
   struct proc* np;
   struct proc* curproc = myproc();
+  
+
+
+
+
+  
+  
+
   int* stackStart = stack + PGSIZE - sizeof(void*);     ///allocate mone page size memory for stack
 
 
@@ -604,7 +593,7 @@ int clone(void(*fcn)(void *, void *), void *arg1, void *arg2, void *stack){
 
   release(&ptable.lock);
 
-  cprintf("end cloning\n");
+  // cprintf("end cloning\n");
   return pid;
 }
 
@@ -623,17 +612,20 @@ int join(void **stack){
         continue;
       havethreads = 1;
       if(p->state == ZOMBIE){
+        cprintf("killing start\n");
         // Found one.
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
-        freevm(p->pgdir);
+        // freevm(p->pgdir);
         p->pid = 0;
         p->parent = 0;
         p->name[0] = 0;
         p->killed = 0;
         p->state = UNUSED;
+        cprintf("before copy stack\n");
         *stack = p->threadStack;
+        cprintf("copy stack\n");
         release(&ptable.lock);
         return pid;
       }

@@ -124,7 +124,22 @@ sys_clone(void){
 	if(argptr(3, (void*)&stack, sizeof(stack)) <0){
 			return -1;
 	}
+
   cprintf("sys_clon arg1 : %d, arg2 : %d\n", *(int*)arg1, *(int*)arg2);
+  
+
+  int endofMemory;
+  endofMemory = (int) myproc()->sz;
+  if(endofMemory - (int) stack < PGSIZE){
+    cprintf("out of memory\n");
+    return -1;
+  }
+
+  if((uint)stack % PGSIZE != 0) {
+    cprintf("not page aligned \n");
+    return -1;
+  }
+
   return clone((void *)fcn, (void *)arg1, (void *)arg2, (void *)stack);
 
 
@@ -132,10 +147,11 @@ sys_clone(void){
 
 int
 sys_join(void){
-  int stack;
-
-  if (argptr(0, (void*)&stack, sizeof(stack) < 0))
+  void* stack;
+  if (argptr(0, (void*)&(stack), sizeof(stack) < 0))
      return -1;
 
+  if((int) stack >= (int) myproc()->sz -2) return -1;
+  cprintf("start join:  stack : %d, sz : %d \n", stack, myproc()->sz);
   return join((void **)stack);
 }
