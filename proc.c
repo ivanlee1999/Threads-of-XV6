@@ -162,7 +162,7 @@ int
 growproc(int n)
 {
   uint sz;
-  struct proc *curproc = myproc();
+  struct proc *curproc = myproc(), *p;
 
   sz = curproc->sz;
   if(n > 0){
@@ -175,16 +175,27 @@ growproc(int n)
 
   curproc->sz = sz;
 
+
+  acquire(&ptable.lock);
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pgdir == curproc->pgdir){
+      p->sz = sz;
+    }
+  }
+
+  release(&ptable.lock);
+
   switchuvm(curproc);
 
-  if (curproc->isthread == 1){
-    struct proc *parent = curproc->parent;
-    parent->sz = sz;
-  }
-  if (curproc->hasthread == 1){
-    struct proc *child = curproc->childThread;
-    child->sz = sz;
-  }
+  // if (curproc->isthread == 1){
+  //   struct proc *parent = curproc->parent;
+  //   parent->sz = sz;
+  // }
+  // if (curproc->hasthread == 1){
+  //   struct proc *child = curproc->childThread;
+  //   child->sz = sz;
+  // }
 
   return 0;
 }
