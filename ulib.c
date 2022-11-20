@@ -3,6 +3,7 @@
 #include "fcntl.h"
 #include "user.h"
 #include "x86.h"
+//#include <stdatomic.h>
 
 char*
 strcpy(char *s, const char *t)
@@ -129,14 +130,21 @@ thread_join(){
 
 
 void lock_acquire(lock_t * lock){
+// int* expected = malloc(sizeof(int *));
+// *expected =0;
+// int* desired = malloc(sizeof(int *));
+// *desired =0;
+while (xchg((volatile uint *)&lock->flag,(uint) 1) == 1)
+ ; // spin
 
 };
 
 void lock_release(lock_t * lock){
-
+ xchg((volatile uint *)&lock->flag, (uint)0);
 };
 
 void lock_init(lock_t * lock){
+lock->flag=0;
 
 };
 

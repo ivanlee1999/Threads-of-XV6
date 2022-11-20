@@ -3,7 +3,8 @@ struct rtcdate;
 
 typedef struct lock_t
 {
-  /* data */
+  int flag;
+
 }lock_t;
 
 // system calls
