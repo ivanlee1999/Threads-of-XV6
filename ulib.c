@@ -122,7 +122,7 @@ thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2){
 int
 thread_join(){
   printf(1, "thread join 1 \n");
-  void** stack = 0;
+  void** stack = malloc(sizeof(void**));
   printf(1, "thread join 2 \n");
   int rc = join(stack);
   printf(1, "thread join 3 \n");

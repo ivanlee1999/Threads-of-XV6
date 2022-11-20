@@ -732,41 +732,43 @@ thread_join(){
  577:	68 89 0b 00 00       	push   $0xb89
  57c:	6a 01                	push   $0x1
  57e:	e8 fd 01 00 00       	call   780 <printf>
-  void** stack = 0;
+  void** stack = malloc(sizeof(void**));
+ 583:	c7 04 24 04 00 00 00 	movl   $0x4,(%esp)
+ 58a:	e8 21 04 00 00       	call   9b0 <malloc>
+ 58f:	89 c3                	mov    %eax,%ebx
   printf(1, "thread join 2 \n");
- 583:	58                   	pop    %eax
- 584:	5a                   	pop    %edx
- 585:	68 99 0b 00 00       	push   $0xb99
- 58a:	6a 01                	push   $0x1
- 58c:	e8 ef 01 00 00       	call   780 <printf>
+ 591:	58                   	pop    %eax
+ 592:	5a                   	pop    %edx
+ 593:	68 99 0b 00 00       	push   $0xb99
+ 598:	6a 01                	push   $0x1
+ 59a:	e8 e1 01 00 00       	call   780 <printf>
   int rc = join(stack);
- 591:	c7 04 24 00 00 00 00 	movl   $0x0,(%esp)
- 598:	e8 21 01 00 00       	call   6be <join>
+ 59f:	89 1c 24             	mov    %ebx,(%esp)
+ 5a2:	e8 17 01 00 00       	call   6be <join>
   printf(1, "thread join 3 \n");
- 59d:	59                   	pop    %ecx
+ 5a7:	59                   	pop    %ecx
   int rc = join(stack);
- 59e:	89 c3                	mov    %eax,%ebx
+ 5a8:	89 c3                	mov    %eax,%ebx
   printf(1, "thread join 3 \n");
- 5a0:	58                   	pop    %eax
- 5a1:	68 a9 0b 00 00       	push   $0xba9
- 5a6:	6a 01                	push   $0x1
- 5a8:	e8 d3 01 00 00       	call   780 <printf>
+ 5aa:	58                   	pop    %eax
+ 5ab:	68 a9 0b 00 00       	push   $0xba9
+ 5b0:	6a 01                	push   $0x1
+ 5b2:	e8 c9 01 00 00       	call   780 <printf>
   // printf(1, "stack %d", stack);
   // free(*stack);
   printf(1, "thread join 4 \n");
- 5ad:	58                   	pop    %eax
- 5ae:	5a                   	pop    %edx
- 5af:	68 b9 0b 00 00       	push   $0xbb9
- 5b4:	6a 01                	push   $0x1
- 5b6:	e8 c5 01 00 00       	call   780 <printf>
+ 5b7:	58                   	pop    %eax
+ 5b8:	5a                   	pop    %edx
+ 5b9:	68 b9 0b 00 00       	push   $0xbb9
+ 5be:	6a 01                	push   $0x1
+ 5c0:	e8 bb 01 00 00       	call   780 <printf>
   return rc;
 }
- 5bb:	89 d8                	mov    %ebx,%eax
- 5bd:	8b 5d fc             	mov    -0x4(%ebp),%ebx
- 5c0:	c9                   	leave  
- 5c1:	c3                   	ret    
- 5c2:	8d b4 26 00 00 00 00 	lea    0x0(%esi,%eiz,1),%esi
- 5c9:	8d b4 26 00 00 00 00 	lea    0x0(%esi,%eiz,1),%esi
+ 5c5:	89 d8                	mov    %ebx,%eax
+ 5c7:	8b 5d fc             	mov    -0x4(%ebp),%ebx
+ 5ca:	c9                   	leave  
+ 5cb:	c3                   	ret    
+ 5cc:	8d 74 26 00          	lea    0x0(%esi,%eiz,1),%esi
 
 000005d0 <lock_acquire>:
 
