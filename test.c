@@ -1,4 +1,4 @@
-/* check that address space size is updated in threads */
+/* multiple threads with some depth of function calls */
 #include "types.h"
 #include "user.h"
 
@@ -8,11 +8,8 @@
 #define PGSIZE (4096)
 
 int ppid;
-int global = 0;
-unsigned int size = 0;
-lock_t lock, lock2;
-int num_threads = 1;
-
+int global = 1;
+int num_threads = 30;
 
 #define assert(x) if (x) {} else { \
    printf(1, "%s: %d ", __FILE__, __LINE__); \
@@ -24,43 +21,34 @@ int num_threads = 1;
 
 void worker(void *arg1, void *arg2);
 
-int main(int argc, char *argv[])
+unsigned int fib(unsigned int n) {
+   if (n == 0) {
+      return 0;
+   } else if (n == 1) {
+      return 1;
+   } else {
+      return fib(n - 1) + fib(n - 2);
+   }
+}
+
+
+int
+main(int argc, char *argv[])
 {
    ppid = getpid();
 
+   assert(fib(28) == 317811);
+
    int arg1 = 11, arg2 = 22;
 
-   lock_init(&lock);
-   lock_init(&lock2);
-   lock_acquire(&lock);
-   lock_acquire(&lock2);
-
    for (int i = 0; i < num_threads; i++) {
+      printf(1, " create : i : %d \n", i);
       int thread_pid = thread_create(worker, &arg1, &arg2);
       assert(thread_pid > 0);
    }
 
-   size = (unsigned int)sbrk(0);
-
-   while (global < num_threads) {
-      lock_release(&lock);
-      sleep(100);
-      lock_acquire(&lock);
-   }
-
-   global = 0;
-   sbrk(10000);
-   size = (unsigned int)sbrk(0);
-   lock_release(&lock);
-
-   while (global < num_threads) {
-      lock_release(&lock2);
-      sleep(100);
-      lock_acquire(&lock2);
-   }
-   lock_release(&lock2);
-
    for (int i = 0; i < num_threads; i++) {
+      printf(1, " join : i : %d \n", i);
       int join_pid = thread_join();
       assert(join_pid > 0);
    }
@@ -69,41 +57,17 @@ int main(int argc, char *argv[])
    exit();
 }
 
-void worker2(void *arg1, void *arg2)
-{
-   int arg1_int = *(int*)arg1;
-   int arg2_int = *(int*)arg2;
-   assert(arg1_int == 11);
-   assert(arg2_int == 22);
-   
-   lock_acquire(&lock2);
-   assert((unsigned int)sbrk(0) == size);
-   global++;
-   lock_release(&lock2);
-
-   
-   exit();
-}
-
-
-void worker(void *arg1, void *arg2) {
-   lock_acquire(&lock);
-   assert((unsigned int)sbrk(0) == size);
-   global++;
-   lock_release(&lock);
-
-   
-
-
-   lock_acquire(&lock2);
-   assert((unsigned int)sbrk(0) == size);
-   global++;
-   sbrk(10000);
-   size = (unsigned int)sbrk(0);
-   lock_release(&lock2);
-
-
-
+void
+worker(void *arg1, void *arg2) {
+   int tmp1 = *(int*)arg1;
+   int tmp2 = *(int*)arg2;
+   assert(tmp1 == 11);
+   assert(tmp2 == 22);
+   assert(global == 1);
+   assert(fib(2) == 1);
+   assert(fib(3) == 2);
+   assert(fib(9) == 34);
+   assert(fib(15) == 610);
    exit();
 }
 

@@ -172,8 +172,20 @@ growproc(int n)
     if((sz = deallocuvm(curproc->pgdir, sz, sz + n)) == 0)
       return -1;
   }
+
   curproc->sz = sz;
+
   switchuvm(curproc);
+
+  if (curproc->isthread == 1){
+    struct proc *parent = curproc->parent;
+    parent->sz = sz;
+  }
+  if (curproc->hasthread == 1){
+    struct proc *child = curproc->childThread;
+    child->sz = sz;
+  }
+
   return 0;
 }
 
@@ -557,6 +569,8 @@ int clone(void(*fcn)(void *, void *), void *arg1, void *arg2, void *stack){
   }
 
   np->isthread = 1;
+  curproc->hasthread = 1;
+  curproc->childThread = np;
 
   np->pgdir = curproc->pgdir;
   

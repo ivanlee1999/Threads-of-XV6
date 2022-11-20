@@ -111,9 +111,9 @@ memmove(void *vdst, const void *vsrc, int n)
 int 
 thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2){
   void* stack = malloc(4096);
-  // if((int) stack % 4096 != 0){
-  //   stack = stack + (4096 - (int) stack % 4096);
-  // }
+  if((int) stack % 4096 != 0){
+    stack = stack + (4096 - (int) stack % 4096);
+  }
   int rc = clone(start_routine, arg1, arg2, stack);
   printf(1, " thread create %d \n", rc);
   return rc;
@@ -121,9 +121,14 @@ thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2){
 
 int
 thread_join(){
-  void** stack = malloc(sizeof(void*));
+  printf(1, "thread join 1 \n");
+  void** stack = 0;
+  printf(1, "thread join 2 \n");
   int rc = join(stack);
-  free(*stack);
+  printf(1, "thread join 3 \n");
+  // printf(1, "stack %d", stack);
+  // free(*stack);
+  printf(1, "thread join 4 \n");
   return rc;
 }
 

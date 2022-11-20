@@ -51,6 +51,8 @@ struct proc {
   char name[16];               // Process name (debugging)
   char *threadStack;          //stack used for cloning
   int isthread;
+  int hasthread;
+  struct proc *childThread; 
 };
 
 // Process memory is laid out contiguously, low addresses first:
