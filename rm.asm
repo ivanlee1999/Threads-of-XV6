@@ -485,8 +485,8 @@ thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2){
  2d1:	89 e5                	mov    %esp,%ebp
  2d3:	53                   	push   %ebx
  2d4:	83 ec 10             	sub    $0x10,%esp
-  void* stack = malloc(4096);
- 2d7:	68 00 10 00 00       	push   $0x1000
+  void* stack = malloc(2* 4096);
+ 2d7:	68 00 20 00 00       	push   $0x2000
  2dc:	e8 8f 04 00 00       	call   770 <malloc>
   if((int) stack % 4096 != 0){
  2e1:	83 c4 10             	add    $0x10,%esp
@@ -506,12 +506,12 @@ thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2){
  305:	ff 75 0c             	push   0xc(%ebp)
  308:	ff 75 08             	push   0x8(%ebp)
  30b:	e8 66 01 00 00       	call   476 <clone>
-  printf(1, " thread create %d \n", rc);
+  printf(1, " thread create  %d \n", rc);
  310:	83 c4 0c             	add    $0xc,%esp
  313:	50                   	push   %eax
   int rc = clone(start_routine, arg1, arg2, stack);
  314:	89 c3                	mov    %eax,%ebx
-  printf(1, " thread create %d \n", rc);
+  printf(1, " thread create  %d \n", rc);
  316:	68 95 08 00 00       	push   $0x895
  31b:	6a 01                	push   $0x1
  31d:	e8 1e 02 00 00       	call   540 <printf>
@@ -532,7 +532,7 @@ thread_join(){
  333:	53                   	push   %ebx
  334:	83 ec 0c             	sub    $0xc,%esp
   printf(1, "thread join 1 \n");
- 337:	68 a9 08 00 00       	push   $0x8a9
+ 337:	68 aa 08 00 00       	push   $0x8aa
  33c:	6a 01                	push   $0x1
  33e:	e8 fd 01 00 00       	call   540 <printf>
   void** stack = malloc(sizeof(void**));
@@ -542,7 +542,7 @@ thread_join(){
   printf(1, "thread join 2 \n");
  351:	58                   	pop    %eax
  352:	5a                   	pop    %edx
- 353:	68 b9 08 00 00       	push   $0x8b9
+ 353:	68 ba 08 00 00       	push   $0x8ba
  358:	6a 01                	push   $0x1
  35a:	e8 e1 01 00 00       	call   540 <printf>
   int rc = join(stack);
@@ -554,7 +554,7 @@ thread_join(){
  368:	89 c3                	mov    %eax,%ebx
   printf(1, "thread join 3 \n");
  36a:	58                   	pop    %eax
- 36b:	68 c9 08 00 00       	push   $0x8c9
+ 36b:	68 ca 08 00 00       	push   $0x8ca
  370:	6a 01                	push   $0x1
  372:	e8 c9 01 00 00       	call   540 <printf>
   // printf(1, "stack %d", stack);
@@ -562,7 +562,7 @@ thread_join(){
   printf(1, "thread join 4 \n");
  377:	58                   	pop    %eax
  378:	5a                   	pop    %edx
- 379:	68 d9 08 00 00       	push   $0x8d9
+ 379:	68 da 08 00 00       	push   $0x8da
  37e:	6a 01                	push   $0x1
  380:	e8 bb 01 00 00       	call   540 <printf>
   return rc;
@@ -827,7 +827,7 @@ printint(int fd, int xx, int base, int sgn)
  4c2:	31 d2                	xor    %edx,%edx
  4c4:	89 cf                	mov    %ecx,%edi
  4c6:	f7 75 c4             	divl   -0x3c(%ebp)
- 4c9:	0f b6 92 48 09 00 00 	movzbl 0x948(%edx),%edx
+ 4c9:	0f b6 92 4c 09 00 00 	movzbl 0x94c(%edx),%edx
  4d0:	89 45 c0             	mov    %eax,-0x40(%ebp)
  4d3:	89 d8                	mov    %ebx,%eax
  4d5:	8d 5b 01             	lea    0x1(%ebx),%ebx
@@ -960,7 +960,7 @@ printf(int fd, const char *fmt, ...)
  5b1:	83 e8 63             	sub    $0x63,%eax
  5b4:	83 f8 15             	cmp    $0x15,%eax
  5b7:	77 17                	ja     5d0 <printf+0x90>
- 5b9:	ff 24 85 f0 08 00 00 	jmp    *0x8f0(,%eax,4)
+ 5b9:	ff 24 85 f4 08 00 00 	jmp    *0x8f4(,%eax,4)
         putc(fd, c);
       }
       state = 0;
@@ -1088,7 +1088,7 @@ printf(int fd, const char *fmt, ...)
  6c3:	8d 74 26 00          	lea    0x0(%esi,%eiz,1),%esi
  6c7:	90                   	nop
           s = "(null)";
- 6c8:	ba e9 08 00 00       	mov    $0x8e9,%edx
+ 6c8:	ba ea 08 00 00       	mov    $0x8ea,%edx
         while(*s != 0){
  6cd:	89 5d d4             	mov    %ebx,-0x2c(%ebp)
  6d0:	b8 28 00 00 00       	mov    $0x28,%eax
@@ -1109,7 +1109,7 @@ free(void *ap)
 
   bp = (Header*)ap - 1;
   for(p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
- 6e1:	a1 a8 0c 00 00       	mov    0xca8,%eax
+ 6e1:	a1 ac 0c 00 00       	mov    0xcac,%eax
 {
  6e6:	89 e5                	mov    %esp,%ebp
  6e8:	57                   	push   %edi
@@ -1154,7 +1154,7 @@ free(void *ap)
 }
  721:	5b                   	pop    %ebx
   freep = p;
- 722:	89 15 a8 0c 00 00    	mov    %edx,0xca8
+ 722:	89 15 ac 0c 00 00    	mov    %edx,0xcac
 }
  728:	5e                   	pop    %esi
  729:	5f                   	pop    %edi
@@ -1186,7 +1186,7 @@ free(void *ap)
     p->s.size += bp->s.size;
  759:	03 43 fc             	add    -0x4(%ebx),%eax
   freep = p;
- 75c:	89 15 a8 0c 00 00    	mov    %edx,0xca8
+ 75c:	89 15 ac 0c 00 00    	mov    %edx,0xcac
     p->s.size += bp->s.size;
  762:	89 42 04             	mov    %eax,0x4(%edx)
     p->s.ptr = bp->s.ptr;
@@ -1219,7 +1219,7 @@ malloc(uint nbytes)
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  779:	8b 45 08             	mov    0x8(%ebp),%eax
   if((prevp = freep) == 0){
- 77c:	8b 3d a8 0c 00 00    	mov    0xca8,%edi
+ 77c:	8b 3d ac 0c 00 00    	mov    0xcac,%edi
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  782:	8d 70 07             	lea    0x7(%eax),%esi
  785:	c1 ee 03             	shr    $0x3,%esi
@@ -1256,7 +1256,7 @@ malloc(uint nbytes)
       return (void*)(p + 1);
     }
     if(p == freep)
- 7c1:	8b 3d a8 0c 00 00    	mov    0xca8,%edi
+ 7c1:	8b 3d ac 0c 00 00    	mov    0xcac,%edi
  7c7:	89 c2                	mov    %eax,%edx
  7c9:	39 d7                	cmp    %edx,%edi
  7cb:	75 eb                	jne    7b8 <malloc+0x48>
@@ -1276,7 +1276,7 @@ malloc(uint nbytes)
  7e9:	50                   	push   %eax
  7ea:	e8 f1 fe ff ff       	call   6e0 <free>
   return freep;
- 7ef:	8b 15 a8 0c 00 00    	mov    0xca8,%edx
+ 7ef:	8b 15 ac 0c 00 00    	mov    0xcac,%edx
       if((p = morecore(nunits)) == 0)
  7f5:	83 c4 10             	add    $0x10,%esp
  7f8:	85 d2                	test   %edx,%edx
@@ -1308,7 +1308,7 @@ malloc(uint nbytes)
         p->s.size = nunits;
  81c:	89 70 04             	mov    %esi,0x4(%eax)
       freep = prevp;
- 81f:	89 15 a8 0c 00 00    	mov    %edx,0xca8
+ 81f:	89 15 ac 0c 00 00    	mov    %edx,0xcac
 }
  825:	8d 65 f4             	lea    -0xc(%ebp),%esp
       return (void*)(p + 1);
@@ -1320,17 +1320,17 @@ malloc(uint nbytes)
  82e:	5d                   	pop    %ebp
  82f:	c3                   	ret    
     base.s.ptr = freep = prevp = &base;
- 830:	c7 05 a8 0c 00 00 ac 	movl   $0xcac,0xca8
+ 830:	c7 05 ac 0c 00 00 b0 	movl   $0xcb0,0xcac
  837:	0c 00 00 
     base.s.size = 0;
- 83a:	bf ac 0c 00 00       	mov    $0xcac,%edi
+ 83a:	bf b0 0c 00 00       	mov    $0xcb0,%edi
     base.s.ptr = freep = prevp = &base;
- 83f:	c7 05 ac 0c 00 00 ac 	movl   $0xcac,0xcac
+ 83f:	c7 05 b0 0c 00 00 b0 	movl   $0xcb0,0xcb0
  846:	0c 00 00 
   for(p = prevp->s.ptr; ; prevp = p, p = p->s.ptr){
  849:	89 fa                	mov    %edi,%edx
     base.s.size = 0;
- 84b:	c7 05 b0 0c 00 00 00 	movl   $0x0,0xcb0
+ 84b:	c7 05 b4 0c 00 00 00 	movl   $0x0,0xcb4
  852:	00 00 00 
     if(p->s.size >= nunits){
  855:	e9 42 ff ff ff       	jmp    79c <malloc+0x2c>

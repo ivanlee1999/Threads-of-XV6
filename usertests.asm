@@ -4399,19 +4399,19 @@ main(int argc, char *argv[])
     2bba:	0f 85 b7 00 00 00    	jne    2c77 <iref+0x107>
     mkdir("");
     2bc0:	83 ec 0c             	sub    $0xc,%esp
-    2bc3:	68 21 56 00 00       	push   $0x5621
+    2bc3:	68 22 56 00 00       	push   $0x5622
     2bc8:	e8 71 0e 00 00       	call   3a3e <mkdir>
     link("README", "");
     2bcd:	59                   	pop    %ecx
     2bce:	58                   	pop    %eax
-    2bcf:	68 21 56 00 00       	push   $0x5621
+    2bcf:	68 22 56 00 00       	push   $0x5622
     2bd4:	68 82 4b 00 00       	push   $0x4b82
     2bd9:	e8 58 0e 00 00       	call   3a36 <link>
     fd = open("", O_CREATE);
     2bde:	58                   	pop    %eax
     2bdf:	5a                   	pop    %edx
     2be0:	68 00 02 00 00       	push   $0x200
-    2be5:	68 21 56 00 00       	push   $0x5621
+    2be5:	68 22 56 00 00       	push   $0x5622
     2bea:	e8 27 0e 00 00       	call   3a16 <open>
     if(fd >= 0)
     2bef:	83 c4 10             	add    $0x10,%esp
@@ -5910,8 +5910,8 @@ thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2){
     38d1:	89 e5                	mov    %esp,%ebp
     38d3:	53                   	push   %ebx
     38d4:	83 ec 10             	sub    $0x10,%esp
-  void* stack = malloc(4096);
-    38d7:	68 00 10 00 00       	push   $0x1000
+  void* stack = malloc(2* 4096);
+    38d7:	68 00 20 00 00       	push   $0x2000
     38dc:	e8 8f 04 00 00       	call   3d70 <malloc>
   if((int) stack % 4096 != 0){
     38e1:	83 c4 10             	add    $0x10,%esp
@@ -5931,12 +5931,12 @@ thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2){
     3905:	ff 75 0c             	push   0xc(%ebp)
     3908:	ff 75 08             	push   0x8(%ebp)
     390b:	e8 66 01 00 00       	call   3a76 <clone>
-  printf(1, " thread create %d \n", rc);
+  printf(1, " thread create  %d \n", rc);
     3910:	83 c4 0c             	add    $0xc,%esp
     3913:	50                   	push   %eax
   int rc = clone(start_routine, arg1, arg2, stack);
     3914:	89 c3                	mov    %eax,%ebx
-  printf(1, " thread create %d \n", rc);
+  printf(1, " thread create  %d \n", rc);
     3916:	68 fe 55 00 00       	push   $0x55fe
     391b:	6a 01                	push   $0x1
     391d:	e8 1e 02 00 00       	call   3b40 <printf>
@@ -5957,7 +5957,7 @@ thread_join(){
     3933:	53                   	push   %ebx
     3934:	83 ec 0c             	sub    $0xc,%esp
   printf(1, "thread join 1 \n");
-    3937:	68 12 56 00 00       	push   $0x5612
+    3937:	68 13 56 00 00       	push   $0x5613
     393c:	6a 01                	push   $0x1
     393e:	e8 fd 01 00 00       	call   3b40 <printf>
   void** stack = malloc(sizeof(void**));
@@ -5967,7 +5967,7 @@ thread_join(){
   printf(1, "thread join 2 \n");
     3951:	58                   	pop    %eax
     3952:	5a                   	pop    %edx
-    3953:	68 22 56 00 00       	push   $0x5622
+    3953:	68 23 56 00 00       	push   $0x5623
     3958:	6a 01                	push   $0x1
     395a:	e8 e1 01 00 00       	call   3b40 <printf>
   int rc = join(stack);
@@ -5979,7 +5979,7 @@ thread_join(){
     3968:	89 c3                	mov    %eax,%ebx
   printf(1, "thread join 3 \n");
     396a:	58                   	pop    %eax
-    396b:	68 32 56 00 00       	push   $0x5632
+    396b:	68 33 56 00 00       	push   $0x5633
     3970:	6a 01                	push   $0x1
     3972:	e8 c9 01 00 00       	call   3b40 <printf>
   // printf(1, "stack %d", stack);
@@ -5987,7 +5987,7 @@ thread_join(){
   printf(1, "thread join 4 \n");
     3977:	58                   	pop    %eax
     3978:	5a                   	pop    %edx
-    3979:	68 42 56 00 00       	push   $0x5642
+    3979:	68 43 56 00 00       	push   $0x5643
     397e:	6a 01                	push   $0x1
     3980:	e8 bb 01 00 00       	call   3b40 <printf>
   return rc;
@@ -6513,7 +6513,7 @@ printf(int fd, const char *fmt, ...)
     3cc3:	8d 74 26 00          	lea    0x0(%esi,%eiz,1),%esi
     3cc7:	90                   	nop
           s = "(null)";
-    3cc8:	ba 52 56 00 00       	mov    $0x5652,%edx
+    3cc8:	ba 53 56 00 00       	mov    $0x5653,%edx
         while(*s != 0){
     3ccd:	89 5d d4             	mov    %ebx,-0x2c(%ebp)
     3cd0:	b8 28 00 00 00       	mov    $0x28,%eax

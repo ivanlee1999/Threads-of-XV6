@@ -28,7 +28,7 @@ main(int argc, char *argv[])
   19:	83 ec 0c             	sub    $0xc,%esp
   1c:	6a 1c                	push   $0x1c
    ppid = getpid();
-  1e:	a3 30 12 00 00       	mov    %eax,0x1230
+  1e:	a3 34 12 00 00       	mov    %eax,0x1234
    assert(fib(28) == 317811);
   23:	e8 48 01 00 00       	call   170 <fib>
   28:	83 c4 10             	add    $0x10,%esp
@@ -38,7 +38,7 @@ main(int argc, char *argv[])
    int arg1 = 11, arg2 = 22;
 
    for (int i = 0; i < num_threads; i++) {
-  36:	83 3d 28 12 00 00 00 	cmpl   $0x0,0x1228
+  36:	83 3d 2c 12 00 00 00 	cmpl   $0x0,0x122c
    int arg1 = 11, arg2 = 22;
   3d:	c7 45 e0 0b 00 00 00 	movl   $0xb,-0x20(%ebp)
   44:	c7 45 e4 16 00 00 00 	movl   $0x16,-0x1c(%ebp)
@@ -50,7 +50,7 @@ main(int argc, char *argv[])
   59:	eb 15                	jmp    70 <main+0x70>
   5b:	8d 74 26 00          	lea    0x0(%esi,%eiz,1),%esi
   5f:	90                   	nop
-  60:	a1 28 12 00 00       	mov    0x1228,%eax
+  60:	a1 2c 12 00 00       	mov    0x122c,%eax
   65:	83 c3 01             	add    $0x1,%ebx
   68:	39 d8                	cmp    %ebx,%eax
   6a:	0f 8e 89 00 00 00    	jle    f9 <main+0xf9>
@@ -86,7 +86,7 @@ main(int argc, char *argv[])
   c4:	6a 01                	push   $0x1
   c6:	e8 f5 08 00 00       	call   9c0 <printf>
   cb:	59                   	pop    %ecx
-  cc:	ff 35 30 12 00 00    	push   0x1230
+  cc:	ff 35 34 12 00 00    	push   0x1234
   d2:	e8 af 07 00 00       	call   886 <kill>
   d7:	e8 7a 07 00 00       	call   856 <exit>
    assert(fib(28) == 317811);
@@ -107,7 +107,7 @@ main(int argc, char *argv[])
   ff:	eb 12                	jmp    113 <main+0x113>
  101:	8d b4 26 00 00 00 00 	lea    0x0(%esi,%eiz,1),%esi
  108:	83 c3 01             	add    $0x1,%ebx
- 10b:	39 1d 28 12 00 00    	cmp    %ebx,0x1228
+ 10b:	39 1d 2c 12 00 00    	cmp    %ebx,0x122c
  111:	7e 3c                	jle    14f <main+0x14f>
       printf(1, " join : i : %d \n", i);
  113:	83 ec 04             	sub    $0x4,%esp
@@ -344,7 +344,7 @@ worker(void *arg1, void *arg2) {
  393:	83 fa 16             	cmp    $0x16,%edx
  396:	75 2a                	jne    3c2 <worker+0x42>
    assert(global == 1);
- 398:	83 3d 2c 12 00 00 01 	cmpl   $0x1,0x122c
+ 398:	83 3d 30 12 00 00 01 	cmpl   $0x1,0x1230
  39f:	0f 84 80 00 00 00    	je     425 <worker+0xa5>
  3a5:	6a 42                	push   $0x42
  3a7:	68 e8 0c 00 00       	push   $0xce8
@@ -371,7 +371,7 @@ worker(void *arg1, void *arg2) {
  3f0:	6a 01                	push   $0x1
  3f2:	e8 c9 05 00 00       	call   9c0 <printf>
  3f7:	59                   	pop    %ecx
- 3f8:	ff 35 30 12 00 00    	push   0x1230
+ 3f8:	ff 35 34 12 00 00    	push   0x1234
  3fe:	e8 83 04 00 00       	call   886 <kill>
  403:	e8 4e 04 00 00       	call   856 <exit>
    assert(tmp1 == 11);
@@ -860,8 +860,8 @@ thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2){
  751:	89 e5                	mov    %esp,%ebp
  753:	53                   	push   %ebx
  754:	83 ec 10             	sub    $0x10,%esp
-  void* stack = malloc(4096);
- 757:	68 00 10 00 00       	push   $0x1000
+  void* stack = malloc(2* 4096);
+ 757:	68 00 20 00 00       	push   $0x2000
  75c:	e8 8f 04 00 00       	call   bf0 <malloc>
   if((int) stack % 4096 != 0){
  761:	83 c4 10             	add    $0x10,%esp
@@ -881,12 +881,12 @@ thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2){
  785:	ff 75 0c             	push   0xc(%ebp)
  788:	ff 75 08             	push   0x8(%ebp)
  78b:	e8 66 01 00 00       	call   8f6 <clone>
-  printf(1, " thread create %d \n", rc);
+  printf(1, " thread create  %d \n", rc);
  790:	83 c4 0c             	add    $0xc,%esp
  793:	50                   	push   %eax
   int rc = clone(start_routine, arg1, arg2, stack);
  794:	89 c3                	mov    %eax,%ebx
-  printf(1, " thread create %d \n", rc);
+  printf(1, " thread create  %d \n", rc);
  796:	68 cd 0d 00 00       	push   $0xdcd
  79b:	6a 01                	push   $0x1
  79d:	e8 1e 02 00 00       	call   9c0 <printf>
@@ -907,7 +907,7 @@ thread_join(){
  7b3:	53                   	push   %ebx
  7b4:	83 ec 0c             	sub    $0xc,%esp
   printf(1, "thread join 1 \n");
- 7b7:	68 e1 0d 00 00       	push   $0xde1
+ 7b7:	68 e2 0d 00 00       	push   $0xde2
  7bc:	6a 01                	push   $0x1
  7be:	e8 fd 01 00 00       	call   9c0 <printf>
   void** stack = malloc(sizeof(void**));
@@ -917,7 +917,7 @@ thread_join(){
   printf(1, "thread join 2 \n");
  7d1:	58                   	pop    %eax
  7d2:	5a                   	pop    %edx
- 7d3:	68 f1 0d 00 00       	push   $0xdf1
+ 7d3:	68 f2 0d 00 00       	push   $0xdf2
  7d8:	6a 01                	push   $0x1
  7da:	e8 e1 01 00 00       	call   9c0 <printf>
   int rc = join(stack);
@@ -929,7 +929,7 @@ thread_join(){
  7e8:	89 c3                	mov    %eax,%ebx
   printf(1, "thread join 3 \n");
  7ea:	58                   	pop    %eax
- 7eb:	68 01 0e 00 00       	push   $0xe01
+ 7eb:	68 02 0e 00 00       	push   $0xe02
  7f0:	6a 01                	push   $0x1
  7f2:	e8 c9 01 00 00       	call   9c0 <printf>
   // printf(1, "stack %d", stack);
@@ -937,7 +937,7 @@ thread_join(){
   printf(1, "thread join 4 \n");
  7f7:	58                   	pop    %eax
  7f8:	5a                   	pop    %edx
- 7f9:	68 11 0e 00 00       	push   $0xe11
+ 7f9:	68 12 0e 00 00       	push   $0xe12
  7fe:	6a 01                	push   $0x1
  800:	e8 bb 01 00 00       	call   9c0 <printf>
   return rc;
@@ -1202,7 +1202,7 @@ printint(int fd, int xx, int base, int sgn)
  942:	31 d2                	xor    %edx,%edx
  944:	89 cf                	mov    %ecx,%edi
  946:	f7 75 c4             	divl   -0x3c(%ebp)
- 949:	0f b6 92 80 0e 00 00 	movzbl 0xe80(%edx),%edx
+ 949:	0f b6 92 84 0e 00 00 	movzbl 0xe84(%edx),%edx
  950:	89 45 c0             	mov    %eax,-0x40(%ebp)
  953:	89 d8                	mov    %ebx,%eax
  955:	8d 5b 01             	lea    0x1(%ebx),%ebx
@@ -1335,7 +1335,7 @@ printf(int fd, const char *fmt, ...)
  a31:	83 e8 63             	sub    $0x63,%eax
  a34:	83 f8 15             	cmp    $0x15,%eax
  a37:	77 17                	ja     a50 <printf+0x90>
- a39:	ff 24 85 28 0e 00 00 	jmp    *0xe28(,%eax,4)
+ a39:	ff 24 85 2c 0e 00 00 	jmp    *0xe2c(,%eax,4)
         putc(fd, c);
       }
       state = 0;
@@ -1463,7 +1463,7 @@ printf(int fd, const char *fmt, ...)
  b43:	8d 74 26 00          	lea    0x0(%esi,%eiz,1),%esi
  b47:	90                   	nop
           s = "(null)";
- b48:	ba 21 0e 00 00       	mov    $0xe21,%edx
+ b48:	ba 22 0e 00 00       	mov    $0xe22,%edx
         while(*s != 0){
  b4d:	89 5d d4             	mov    %ebx,-0x2c(%ebp)
  b50:	b8 28 00 00 00       	mov    $0x28,%eax
@@ -1484,7 +1484,7 @@ free(void *ap)
 
   bp = (Header*)ap - 1;
   for(p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
- b61:	a1 34 12 00 00       	mov    0x1234,%eax
+ b61:	a1 38 12 00 00       	mov    0x1238,%eax
 {
  b66:	89 e5                	mov    %esp,%ebp
  b68:	57                   	push   %edi
@@ -1529,7 +1529,7 @@ free(void *ap)
 }
  ba1:	5b                   	pop    %ebx
   freep = p;
- ba2:	89 15 34 12 00 00    	mov    %edx,0x1234
+ ba2:	89 15 38 12 00 00    	mov    %edx,0x1238
 }
  ba8:	5e                   	pop    %esi
  ba9:	5f                   	pop    %edi
@@ -1561,7 +1561,7 @@ free(void *ap)
     p->s.size += bp->s.size;
  bd9:	03 43 fc             	add    -0x4(%ebx),%eax
   freep = p;
- bdc:	89 15 34 12 00 00    	mov    %edx,0x1234
+ bdc:	89 15 38 12 00 00    	mov    %edx,0x1238
     p->s.size += bp->s.size;
  be2:	89 42 04             	mov    %eax,0x4(%edx)
     p->s.ptr = bp->s.ptr;
@@ -1594,7 +1594,7 @@ malloc(uint nbytes)
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  bf9:	8b 45 08             	mov    0x8(%ebp),%eax
   if((prevp = freep) == 0){
- bfc:	8b 3d 34 12 00 00    	mov    0x1234,%edi
+ bfc:	8b 3d 38 12 00 00    	mov    0x1238,%edi
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  c02:	8d 70 07             	lea    0x7(%eax),%esi
  c05:	c1 ee 03             	shr    $0x3,%esi
@@ -1631,7 +1631,7 @@ malloc(uint nbytes)
       return (void*)(p + 1);
     }
     if(p == freep)
- c41:	8b 3d 34 12 00 00    	mov    0x1234,%edi
+ c41:	8b 3d 38 12 00 00    	mov    0x1238,%edi
  c47:	89 c2                	mov    %eax,%edx
  c49:	39 d7                	cmp    %edx,%edi
  c4b:	75 eb                	jne    c38 <malloc+0x48>
@@ -1651,7 +1651,7 @@ malloc(uint nbytes)
  c69:	50                   	push   %eax
  c6a:	e8 f1 fe ff ff       	call   b60 <free>
   return freep;
- c6f:	8b 15 34 12 00 00    	mov    0x1234,%edx
+ c6f:	8b 15 38 12 00 00    	mov    0x1238,%edx
       if((p = morecore(nunits)) == 0)
  c75:	83 c4 10             	add    $0x10,%esp
  c78:	85 d2                	test   %edx,%edx
@@ -1683,7 +1683,7 @@ malloc(uint nbytes)
         p->s.size = nunits;
  c9c:	89 70 04             	mov    %esi,0x4(%eax)
       freep = prevp;
- c9f:	89 15 34 12 00 00    	mov    %edx,0x1234
+ c9f:	89 15 38 12 00 00    	mov    %edx,0x1238
 }
  ca5:	8d 65 f4             	lea    -0xc(%ebp),%esp
       return (void*)(p + 1);
@@ -1695,17 +1695,17 @@ malloc(uint nbytes)
  cae:	5d                   	pop    %ebp
  caf:	c3                   	ret    
     base.s.ptr = freep = prevp = &base;
- cb0:	c7 05 34 12 00 00 38 	movl   $0x1238,0x1234
+ cb0:	c7 05 38 12 00 00 3c 	movl   $0x123c,0x1238
  cb7:	12 00 00 
     base.s.size = 0;
- cba:	bf 38 12 00 00       	mov    $0x1238,%edi
+ cba:	bf 3c 12 00 00       	mov    $0x123c,%edi
     base.s.ptr = freep = prevp = &base;
- cbf:	c7 05 38 12 00 00 38 	movl   $0x1238,0x1238
+ cbf:	c7 05 3c 12 00 00 3c 	movl   $0x123c,0x123c
  cc6:	12 00 00 
   for(p = prevp->s.ptr; ; prevp = p, p = p->s.ptr){
  cc9:	89 fa                	mov    %edi,%edx
     base.s.size = 0;
- ccb:	c7 05 3c 12 00 00 00 	movl   $0x0,0x123c
+ ccb:	c7 05 40 12 00 00 00 	movl   $0x0,0x1240
  cd2:	00 00 00 
     if(p->s.size >= nunits){
  cd5:	e9 42 ff ff ff       	jmp    c1c <malloc+0x2c>

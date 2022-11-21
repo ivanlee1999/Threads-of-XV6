@@ -23,6 +23,7 @@ void worker(void *, void*);
 int
 main(int argc, char *argv[])
 {
+   printf("thread1.c dsffsd");
    ppid = getpid();
 
    int arg1 = 35;

@@ -23,6 +23,7 @@ void worker(void *, void *);
 int
 main(int argc, char *argv[])
 {
+   printf("thread2.c");
    ppid = getpid();
 
    int i, thread_pid, join_pid;

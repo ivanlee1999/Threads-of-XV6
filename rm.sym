@@ -2,10 +2,10 @@
 00000000 ulib.c
 00000000 printf.c
 00000490 printint
-00000948 digits.0
+0000094c digits.0
 00000000 umalloc.c
-00000ca8 freep
-00000cac base
+00000cac freep
+00000cb0 base
 00000080 strcpy
 00000540 printf
 000002a0 memmove
@@ -27,7 +27,7 @@
 000003ce fork
 0000045e sbrk
 0000046e uptime
-00000ca8 __bss_start
+00000cac __bss_start
 00000140 memset
 00000000 main
 00000390 lock_acquire
@@ -36,8 +36,8 @@
 000000b0 strcmp
 0000044e dup
 00000210 stat
-00000ca8 _edata
-00000cb4 _end
+00000cac _edata
+00000cb8 _end
 00000436 link
 000003d6 exit
 00000260 atoi

@@ -602,8 +602,8 @@ thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2){
  441:	89 e5                	mov    %esp,%ebp
  443:	53                   	push   %ebx
  444:	83 ec 10             	sub    $0x10,%esp
-  void* stack = malloc(4096);
- 447:	68 00 10 00 00       	push   $0x1000
+  void* stack = malloc(2* 4096);
+ 447:	68 00 20 00 00       	push   $0x2000
  44c:	e8 8f 04 00 00       	call   8e0 <malloc>
   if((int) stack % 4096 != 0){
  451:	83 c4 10             	add    $0x10,%esp
@@ -623,12 +623,12 @@ thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2){
  475:	ff 75 0c             	push   0xc(%ebp)
  478:	ff 75 08             	push   0x8(%ebp)
  47b:	e8 66 01 00 00       	call   5e6 <clone>
-  printf(1, " thread create %d \n", rc);
+  printf(1, " thread create  %d \n", rc);
  480:	83 c4 0c             	add    $0xc,%esp
  483:	50                   	push   %eax
   int rc = clone(start_routine, arg1, arg2, stack);
  484:	89 c3                	mov    %eax,%ebx
-  printf(1, " thread create %d \n", rc);
+  printf(1, " thread create  %d \n", rc);
  486:	68 ce 0a 00 00       	push   $0xace
  48b:	6a 01                	push   $0x1
  48d:	e8 1e 02 00 00       	call   6b0 <printf>
@@ -649,7 +649,7 @@ thread_join(){
  4a3:	53                   	push   %ebx
  4a4:	83 ec 0c             	sub    $0xc,%esp
   printf(1, "thread join 1 \n");
- 4a7:	68 e2 0a 00 00       	push   $0xae2
+ 4a7:	68 e3 0a 00 00       	push   $0xae3
  4ac:	6a 01                	push   $0x1
  4ae:	e8 fd 01 00 00       	call   6b0 <printf>
   void** stack = malloc(sizeof(void**));
@@ -659,7 +659,7 @@ thread_join(){
   printf(1, "thread join 2 \n");
  4c1:	58                   	pop    %eax
  4c2:	5a                   	pop    %edx
- 4c3:	68 f2 0a 00 00       	push   $0xaf2
+ 4c3:	68 f3 0a 00 00       	push   $0xaf3
  4c8:	6a 01                	push   $0x1
  4ca:	e8 e1 01 00 00       	call   6b0 <printf>
   int rc = join(stack);
@@ -671,7 +671,7 @@ thread_join(){
  4d8:	89 c3                	mov    %eax,%ebx
   printf(1, "thread join 3 \n");
  4da:	58                   	pop    %eax
- 4db:	68 02 0b 00 00       	push   $0xb02
+ 4db:	68 03 0b 00 00       	push   $0xb03
  4e0:	6a 01                	push   $0x1
  4e2:	e8 c9 01 00 00       	call   6b0 <printf>
   // printf(1, "stack %d", stack);
@@ -679,7 +679,7 @@ thread_join(){
   printf(1, "thread join 4 \n");
  4e7:	58                   	pop    %eax
  4e8:	5a                   	pop    %edx
- 4e9:	68 12 0b 00 00       	push   $0xb12
+ 4e9:	68 13 0b 00 00       	push   $0xb13
  4ee:	6a 01                	push   $0x1
  4f0:	e8 bb 01 00 00       	call   6b0 <printf>
   return rc;
@@ -1205,7 +1205,7 @@ printf(int fd, const char *fmt, ...)
  833:	8d 74 26 00          	lea    0x0(%esi,%eiz,1),%esi
  837:	90                   	nop
           s = "(null)";
- 838:	ba 22 0b 00 00       	mov    $0xb22,%edx
+ 838:	ba 23 0b 00 00       	mov    $0xb23,%edx
         while(*s != 0){
  83d:	89 5d d4             	mov    %ebx,-0x2c(%ebp)
  840:	b8 28 00 00 00       	mov    $0x28,%eax
